@@ -2,15 +2,19 @@ import {
   users, 
   inquiries, 
   visits, 
+  contents,
   type User, 
   type Inquiry, 
   type Visit, 
+  type Content,
   type InsertUser, 
   type InsertInquiry, 
-  type InsertVisit 
+  type InsertVisit,
+  type InsertContent,
+  type UpdateContent
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, gte, count, sql, desc } from "drizzle-orm";
+import { eq, gte, count, sql, desc, asc } from "drizzle-orm";
 
 export interface IStorage {
   // User management
@@ -31,6 +35,15 @@ export interface IStorage {
   getTrafficSourcesBreakdown(): Promise<Array<{source: string, percentage: number}>>;
   getPopularPages(): Promise<Array<{page: string, count: number}>>;
   getVisitsOverTime(since: Date): Promise<Array<{date: string, count: number}>>;
+  
+  // Content Management
+  getAllContents(): Promise<Content[]>;
+  getContentsBySection(section: string): Promise<Content[]>;
+  getContent(id: number): Promise<Content | undefined>;
+  getContentByKey(key: string): Promise<Content | undefined>;
+  createContent(content: InsertContent): Promise<Content>;
+  updateContent(id: number, content: UpdateContent): Promise<Content | undefined>;
+  deleteContent(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
