@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'wouter';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,14 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { PlusCircle, Edit, Trash, Check, AlertCircle } from 'lucide-react';
+import { 
+  PlusCircle, 
+  Edit, 
+  Trash, 
+  AlertCircle,
+  FileEdit, 
+  LayoutDashboard 
+} from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 
 // Types for content items
@@ -197,348 +205,381 @@ export default function ContentManagement() {
   };
 
   // Get unique sections for tabs
-  const sections = [...new Set(contents.map(item => item.section))];
+  const sections = Array.from(new Set(contents.map(item => item.section)));
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">{t('Content Management')}</h1>
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="flex items-center gap-2">
-              <PlusCircle className="h-4 w-4" />
-              {t('Add New Content')}
-            </Button>
-          </DialogTrigger>
+    <div className="min-h-screen bg-light">
+      <header className="bg-primary text-white shadow-md">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center">
+              <a href="/" className="text-2xl font-bold font-condensed">
+                TPMS<span className="text-accent">Pro</span> <span className="text-sm ml-2">| {t('Content Management')}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      <div className="bg-gray-100 border-b">
+        <div className="container mx-auto px-4">
+          <nav className="flex overflow-x-auto">
+            <Link href="/admin/dashboard">
+              <a className="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:text-primary hover:border-b-2 hover:border-primary transition-colors">
+                <LayoutDashboard className="w-4 h-4 mr-2" />
+                {t('Dashboard')}
+              </a>
+            </Link>
+            <Link href="/admin/content">
+              <a className="flex items-center px-4 py-3 text-sm font-medium border-b-2 border-primary text-primary">
+                <FileEdit className="w-4 h-4 mr-2" />
+                {t('Content Management')}
+              </a>
+            </Link>
+          </nav>
+        </div>
+      </div>
+      
+      <div className="container mx-auto py-6">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold">{t('Website Content Editor')}</h1>
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center gap-2">
+                <PlusCircle className="h-4 w-4" />
+                {t('Add New Content')}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>{t('Add New Content')}</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleCreateSubmit} className="space-y-4 mt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="key">{t('Key')} *</Label>
+                    <Input 
+                      id="key" 
+                      name="key" 
+                      value={formValues.key} 
+                      onChange={handleInputChange} 
+                      placeholder="unique_key" 
+                      required 
+                    />
+                    <p className="text-xs text-muted-foreground">{t('A unique identifier for this content')}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="section">{t('Section')} *</Label>
+                    <Select 
+                      value={formValues.section} 
+                      onValueChange={(value) => handleSelectChange('section', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={t('Select section')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="hero">{t('Hero')}</SelectItem>
+                        <SelectItem value="about">{t('About Us')}</SelectItem>
+                        <SelectItem value="products">{t('Products')}</SelectItem>
+                        <SelectItem value="services">{t('Services')}</SelectItem>
+                        <SelectItem value="contact">{t('Contact')}</SelectItem>
+                        <SelectItem value="footer">{t('Footer')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="order">{t('Display Order')} *</Label>
+                    <Input 
+                      id="order" 
+                      name="order" 
+                      type="number" 
+                      value={formValues.order} 
+                      onChange={handleInputChange} 
+                      min="0" 
+                      required 
+                    />
+                  </div>
+                </div>
+                
+                <Separator />
+                
+                <div className="space-y-2">
+                  <Label htmlFor="title_ru">{t('Title (Russian)')}</Label>
+                  <Input 
+                    id="title_ru" 
+                    name="title_ru" 
+                    value={formValues.title_ru} 
+                    onChange={handleInputChange} 
+                    placeholder={t('Title in Russian')} 
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="content_ru">{t('Content (Russian)')}</Label>
+                  <Textarea 
+                    id="content_ru" 
+                    name="content_ru" 
+                    value={formValues.content_ru} 
+                    onChange={handleInputChange} 
+                    placeholder={t('Content in Russian')} 
+                    rows={4} 
+                  />
+                </div>
+                
+                <Separator />
+                
+                <div className="space-y-2">
+                  <Label htmlFor="title_kk">{t('Title (Kazakh)')}</Label>
+                  <Input 
+                    id="title_kk" 
+                    name="title_kk" 
+                    value={formValues.title_kk} 
+                    onChange={handleInputChange} 
+                    placeholder={t('Title in Kazakh')} 
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="content_kk">{t('Content (Kazakh)')}</Label>
+                  <Textarea 
+                    id="content_kk" 
+                    name="content_kk" 
+                    value={formValues.content_kk} 
+                    onChange={handleInputChange} 
+                    placeholder={t('Content in Kazakh')} 
+                    rows={4} 
+                  />
+                </div>
+                
+                <div className="flex justify-end gap-2">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setIsCreateDialogOpen(false)}
+                  >
+                    {t('Cancel')}
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    disabled={createMutation.isPending}
+                  >
+                    {createMutation.isPending ? t('Creating...') : t('Create Content')}
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+        
+        <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="mb-4">
+            <TabsTrigger value="all">{t('All Content')}</TabsTrigger>
+            {sections.map(section => (
+              <TabsTrigger key={section} value={section}>
+                {t(section.charAt(0).toUpperCase() + section.slice(1))}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          
+          <TabsContent value={activeTab}>
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  {activeTab === 'all' 
+                    ? t('All Website Content') 
+                    : t('{{section}} Content', { section: activeTab.charAt(0).toUpperCase() + activeTab.slice(1) })}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <div className="flex justify-center py-8">
+                    <p>{t('Loading content...')}</p>
+                  </div>
+                ) : filteredContents.length === 0 ? (
+                  <div className="flex flex-col items-center py-8 text-center">
+                    <AlertCircle className="h-10 w-10 text-muted-foreground mb-2" />
+                    <h3 className="font-medium text-lg mb-1">{t('No content found')}</h3>
+                    <p className="text-muted-foreground mb-4">
+                      {activeTab === 'all' 
+                        ? t('There is no content in the database. Add some content to get started.') 
+                        : t('There is no content in this section. Add some content to this section.')}
+                    </p>
+                    <Button onClick={() => setIsCreateDialogOpen(true)}>
+                      {t('Add New Content')}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>{t('Key')}</TableHead>
+                          <TableHead>{t('Section')}</TableHead>
+                          <TableHead>{t('Order')}</TableHead>
+                          <TableHead>{t('Russian Title')}</TableHead>
+                          <TableHead>{t('Kazakh Title')}</TableHead>
+                          <TableHead>{t('Last Updated')}</TableHead>
+                          <TableHead>{t('Actions')}</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredContents.map((content) => (
+                          <TableRow key={content.id}>
+                            <TableCell className="font-medium">{content.key}</TableCell>
+                            <TableCell>{content.section}</TableCell>
+                            <TableCell>{content.order}</TableCell>
+                            <TableCell>{content.title_ru || '-'}</TableCell>
+                            <TableCell>{content.title_kk || '-'}</TableCell>
+                            <TableCell>
+                              {new Date(content.updatedAt).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  onClick={() => handleEditClick(content)}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  onClick={() => handleDeleteClick(content.id)}
+                                >
+                                  <Trash className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+        
+        {/* Edit Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>{t('Add New Content')}</DialogTitle>
+              <DialogTitle>{t('Edit Content')}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleCreateSubmit} className="space-y-4 mt-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="key">{t('Key')} *</Label>
-                  <Input 
-                    id="key" 
-                    name="key" 
-                    value={formValues.key} 
-                    onChange={handleInputChange} 
-                    placeholder="unique_key" 
-                    required 
-                  />
-                  <p className="text-xs text-muted-foreground">{t('A unique identifier for this content')}</p>
+            {selectedContent && (
+              <form onSubmit={handleUpdateSubmit} className="space-y-4 mt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-key">{t('Key')} *</Label>
+                    <Input 
+                      id="edit-key" 
+                      name="key" 
+                      value={formValues.key} 
+                      onChange={handleInputChange} 
+                      required 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-section">{t('Section')} *</Label>
+                    <Select 
+                      value={formValues.section} 
+                      onValueChange={(value) => handleSelectChange('section', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={t('Select section')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="hero">{t('Hero')}</SelectItem>
+                        <SelectItem value="about">{t('About Us')}</SelectItem>
+                        <SelectItem value="products">{t('Products')}</SelectItem>
+                        <SelectItem value="services">{t('Services')}</SelectItem>
+                        <SelectItem value="contact">{t('Contact')}</SelectItem>
+                        <SelectItem value="footer">{t('Footer')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-order">{t('Display Order')} *</Label>
+                    <Input 
+                      id="edit-order" 
+                      name="order" 
+                      type="number" 
+                      value={formValues.order} 
+                      onChange={handleInputChange} 
+                      min="0" 
+                      required 
+                    />
+                  </div>
                 </div>
+                
+                <Separator />
+                
                 <div className="space-y-2">
-                  <Label htmlFor="section">{t('Section')} *</Label>
-                  <Select 
-                    value={formValues.section} 
-                    onValueChange={(value) => handleSelectChange('section', value)}
+                  <Label htmlFor="edit-title_ru">{t('Title (Russian)')}</Label>
+                  <Input 
+                    id="edit-title_ru" 
+                    name="title_ru" 
+                    value={formValues.title_ru} 
+                    onChange={handleInputChange} 
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="edit-content_ru">{t('Content (Russian)')}</Label>
+                  <Textarea 
+                    id="edit-content_ru" 
+                    name="content_ru" 
+                    value={formValues.content_ru} 
+                    onChange={handleInputChange} 
+                    rows={4} 
+                  />
+                </div>
+                
+                <Separator />
+                
+                <div className="space-y-2">
+                  <Label htmlFor="edit-title_kk">{t('Title (Kazakh)')}</Label>
+                  <Input 
+                    id="edit-title_kk" 
+                    name="title_kk" 
+                    value={formValues.title_kk} 
+                    onChange={handleInputChange} 
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="edit-content_kk">{t('Content (Kazakh)')}</Label>
+                  <Textarea 
+                    id="edit-content_kk" 
+                    name="content_kk" 
+                    value={formValues.content_kk} 
+                    onChange={handleInputChange} 
+                    rows={4} 
+                  />
+                </div>
+                
+                <div className="flex justify-end gap-2">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setIsEditDialogOpen(false)}
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder={t('Select section')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="hero">{t('Hero')}</SelectItem>
-                      <SelectItem value="about">{t('About Us')}</SelectItem>
-                      <SelectItem value="products">{t('Products')}</SelectItem>
-                      <SelectItem value="services">{t('Services')}</SelectItem>
-                      <SelectItem value="contact">{t('Contact')}</SelectItem>
-                      <SelectItem value="footer">{t('Footer')}</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    {t('Cancel')}
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    disabled={updateMutation.isPending}
+                  >
+                    {updateMutation.isPending ? t('Updating...') : t('Update Content')}
+                  </Button>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="order">{t('Display Order')} *</Label>
-                  <Input 
-                    id="order" 
-                    name="order" 
-                    type="number" 
-                    value={formValues.order} 
-                    onChange={handleInputChange} 
-                    min="0" 
-                    required 
-                  />
-                </div>
-              </div>
-              
-              <Separator />
-              
-              <div className="space-y-2">
-                <Label htmlFor="title_ru">{t('Title (Russian)')}</Label>
-                <Input 
-                  id="title_ru" 
-                  name="title_ru" 
-                  value={formValues.title_ru} 
-                  onChange={handleInputChange} 
-                  placeholder={t('Title in Russian')} 
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="content_ru">{t('Content (Russian)')}</Label>
-                <Textarea 
-                  id="content_ru" 
-                  name="content_ru" 
-                  value={formValues.content_ru} 
-                  onChange={handleInputChange} 
-                  placeholder={t('Content in Russian')} 
-                  rows={4} 
-                />
-              </div>
-              
-              <Separator />
-              
-              <div className="space-y-2">
-                <Label htmlFor="title_kk">{t('Title (Kazakh)')}</Label>
-                <Input 
-                  id="title_kk" 
-                  name="title_kk" 
-                  value={formValues.title_kk} 
-                  onChange={handleInputChange} 
-                  placeholder={t('Title in Kazakh')} 
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="content_kk">{t('Content (Kazakh)')}</Label>
-                <Textarea 
-                  id="content_kk" 
-                  name="content_kk" 
-                  value={formValues.content_kk} 
-                  onChange={handleInputChange} 
-                  placeholder={t('Content in Kazakh')} 
-                  rows={4} 
-                />
-              </div>
-              
-              <div className="flex justify-end gap-2">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setIsCreateDialogOpen(false)}
-                >
-                  {t('Cancel')}
-                </Button>
-                <Button 
-                  type="submit" 
-                  disabled={createMutation.isPending}
-                >
-                  {createMutation.isPending ? t('Creating...') : t('Create Content')}
-                </Button>
-              </div>
-            </form>
+              </form>
+            )}
           </DialogContent>
         </Dialog>
       </div>
-      
-      <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-4">
-          <TabsTrigger value="all">{t('All Content')}</TabsTrigger>
-          {sections.map(section => (
-            <TabsTrigger key={section} value={section}>
-              {t(section.charAt(0).toUpperCase() + section.slice(1))}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        
-        <TabsContent value={activeTab}>
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                {activeTab === 'all' 
-                  ? t('All Website Content') 
-                  : t('{{section}} Content', { section: activeTab.charAt(0).toUpperCase() + activeTab.slice(1) })}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="flex justify-center py-8">
-                  <p>{t('Loading content...')}</p>
-                </div>
-              ) : filteredContents.length === 0 ? (
-                <div className="flex flex-col items-center py-8 text-center">
-                  <AlertCircle className="h-10 w-10 text-muted-foreground mb-2" />
-                  <h3 className="font-medium text-lg mb-1">{t('No content found')}</h3>
-                  <p className="text-muted-foreground mb-4">
-                    {activeTab === 'all' 
-                      ? t('There is no content in the database. Add some content to get started.') 
-                      : t('There is no content in this section. Add some content to this section.')}
-                  </p>
-                  <Button onClick={() => setIsCreateDialogOpen(true)}>
-                    {t('Add New Content')}
-                  </Button>
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>{t('Key')}</TableHead>
-                        <TableHead>{t('Section')}</TableHead>
-                        <TableHead>{t('Order')}</TableHead>
-                        <TableHead>{t('Russian Title')}</TableHead>
-                        <TableHead>{t('Kazakh Title')}</TableHead>
-                        <TableHead>{t('Last Updated')}</TableHead>
-                        <TableHead>{t('Actions')}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredContents.map((content) => (
-                        <TableRow key={content.id}>
-                          <TableCell className="font-medium">{content.key}</TableCell>
-                          <TableCell>{content.section}</TableCell>
-                          <TableCell>{content.order}</TableCell>
-                          <TableCell>{content.title_ru || '-'}</TableCell>
-                          <TableCell>{content.title_kk || '-'}</TableCell>
-                          <TableCell>
-                            {new Date(content.updatedAt).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                onClick={() => handleEditClick(content)}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                onClick={() => handleDeleteClick(content.id)}
-                              >
-                                <Trash className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-      
-      {/* Edit Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>{t('Edit Content')}</DialogTitle>
-          </DialogHeader>
-          {selectedContent && (
-            <form onSubmit={handleUpdateSubmit} className="space-y-4 mt-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="edit-key">{t('Key')} *</Label>
-                  <Input 
-                    id="edit-key" 
-                    name="key" 
-                    value={formValues.key} 
-                    onChange={handleInputChange} 
-                    required 
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-section">{t('Section')} *</Label>
-                  <Select 
-                    value={formValues.section} 
-                    onValueChange={(value) => handleSelectChange('section', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={t('Select section')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="hero">{t('Hero')}</SelectItem>
-                      <SelectItem value="about">{t('About Us')}</SelectItem>
-                      <SelectItem value="products">{t('Products')}</SelectItem>
-                      <SelectItem value="services">{t('Services')}</SelectItem>
-                      <SelectItem value="contact">{t('Contact')}</SelectItem>
-                      <SelectItem value="footer">{t('Footer')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-order">{t('Display Order')} *</Label>
-                  <Input 
-                    id="edit-order" 
-                    name="order" 
-                    type="number" 
-                    value={formValues.order} 
-                    onChange={handleInputChange} 
-                    min="0" 
-                    required 
-                  />
-                </div>
-              </div>
-              
-              <Separator />
-              
-              <div className="space-y-2">
-                <Label htmlFor="edit-title_ru">{t('Title (Russian)')}</Label>
-                <Input 
-                  id="edit-title_ru" 
-                  name="title_ru" 
-                  value={formValues.title_ru} 
-                  onChange={handleInputChange} 
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="edit-content_ru">{t('Content (Russian)')}</Label>
-                <Textarea 
-                  id="edit-content_ru" 
-                  name="content_ru" 
-                  value={formValues.content_ru} 
-                  onChange={handleInputChange} 
-                  rows={4} 
-                />
-              </div>
-              
-              <Separator />
-              
-              <div className="space-y-2">
-                <Label htmlFor="edit-title_kk">{t('Title (Kazakh)')}</Label>
-                <Input 
-                  id="edit-title_kk" 
-                  name="title_kk" 
-                  value={formValues.title_kk} 
-                  onChange={handleInputChange} 
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="edit-content_kk">{t('Content (Kazakh)')}</Label>
-                <Textarea 
-                  id="edit-content_kk" 
-                  name="content_kk" 
-                  value={formValues.content_kk} 
-                  onChange={handleInputChange} 
-                  rows={4} 
-                />
-              </div>
-              
-              <div className="flex justify-end gap-2">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setIsEditDialogOpen(false)}
-                >
-                  {t('Cancel')}
-                </Button>
-                <Button 
-                  type="submit" 
-                  disabled={updateMutation.isPending}
-                >
-                  {updateMutation.isPending ? t('Updating...') : t('Update Content')}
-                </Button>
-              </div>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

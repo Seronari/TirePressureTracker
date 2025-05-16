@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLocation } from 'wouter';
+import { useLocation, Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { StatsCard } from '@/components/admin/stats-card';
 import { VisitsChart } from '@/components/admin/chart';
 import { TrafficSources } from '@/components/admin/traffic-sources';
 import { InquiryTable } from '@/components/admin/inquiry-table';
-import { ClipboardList, Users, PieChart } from 'lucide-react';
+import { ClipboardList, Users, PieChart, FileEdit, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -86,6 +86,25 @@ export default function Dashboard() {
           </div>
         </div>
       </header>
+      
+      <div className="bg-gray-100 border-b">
+        <div className="container mx-auto px-4">
+          <nav className="flex overflow-x-auto">
+            <Link href="/admin/dashboard">
+              <a className="flex items-center px-4 py-3 text-sm font-medium border-b-2 border-primary text-primary">
+                <LayoutDashboard className="w-4 h-4 mr-2" />
+                {t('Dashboard')}
+              </a>
+            </Link>
+            <Link href="/admin/content">
+              <a className="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:text-primary hover:border-b-2 hover:border-primary transition-colors">
+                <FileEdit className="w-4 h-4 mr-2" />
+                {t('Content Management')}
+              </a>
+            </Link>
+          </nav>
+        </div>
+      </div>
 
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8 text-secondary font-condensed">{t('admin.dashboard.controlPanel')}</h1>
