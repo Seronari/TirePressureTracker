@@ -1,7 +1,13 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { loginUserSchema, insertInquirySchema, insertVisitSchema } from "@shared/schema";
+import { 
+  loginUserSchema, 
+  insertInquirySchema, 
+  insertVisitSchema, 
+  contentSchema,
+  updateContentSchema
+} from "@shared/schema";
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
@@ -228,6 +234,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const visitsData = await storage.getVisitsOverTime(startDate);
       res.json(visitsData);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  // Content Management Routes
+  app.get("/api/contents", async (req, res, next) => {
+    try {
+      const section = req.query.section as string;
+      let contents;
+      
+      if (section) {
+        contents = await storage.getContentsBySection(section);
+      } else {
+        contents = await storage.getAllContents();
+      }
+      
+      res.json(contents);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  app.get("/api/contents/:id", async (req, res, next) => {
+    try {
+      const id = parseInt(req.params.id);
+      const content = await storage.getContent(id);
+      
+      if (!content) {
+        return res.status(404).json({ message: "Content not found" });
+      }
+      
+      res.json(content);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  app.post("/api/contents", ensureAdmin, async (req, res, next) => {
+    try {
+      const result = contentSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid input", errors: result.error.format() });
+      }
+      
+      const content = await storage.createContent(result.data);
+      res.status(201).json(content);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  app.put("/api/contents/:id", ensureAdmin, async (req, res, next) => {
+    try {
+      const id = parseInt(req.params.id);
+      const result = updateContentSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid input", errors: result.error.format() });
+      }
+      
+      const content = await storage.updateContent(id, result.data);
+      if (!content) {
+        return res.status(404).json({ message: "Content not found" });
+      }
+      
+      res.json(content);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  app.delete("/api/contents/:id", ensureAdmin, async (req, res, next) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteContent(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Content not found" });
+      }
+      
+      res.json({ success: true });
     } catch (error) {
       next(error);
     }

@@ -198,6 +198,68 @@ export class DatabaseStorage implements IStorage {
     
     return completeResult;
   }
+  
+  // Content Management methods
+  async getAllContents(): Promise<Content[]> {
+    return await db
+      .select()
+      .from(contents)
+      .orderBy(asc(contents.section), asc(contents.order));
+  }
+  
+  async getContentsBySection(section: string): Promise<Content[]> {
+    return await db
+      .select()
+      .from(contents)
+      .where(eq(contents.section, section))
+      .orderBy(asc(contents.order));
+  }
+  
+  async getContent(id: number): Promise<Content | undefined> {
+    const result = await db
+      .select()
+      .from(contents)
+      .where(eq(contents.id, id));
+    return result.length > 0 ? result[0] : undefined;
+  }
+  
+  async getContentByKey(key: string): Promise<Content | undefined> {
+    const result = await db
+      .select()
+      .from(contents)
+      .where(eq(contents.key, key));
+    return result.length > 0 ? result[0] : undefined;
+  }
+  
+  async createContent(content: InsertContent): Promise<Content> {
+    const [result] = await db
+      .insert(contents)
+      .values({
+        ...content,
+        updatedAt: new Date()
+      })
+      .returning();
+    return result;
+  }
+  
+  async updateContent(id: number, content: UpdateContent): Promise<Content | undefined> {
+    const [result] = await db
+      .update(contents)
+      .set({
+        ...content,
+        updatedAt: new Date()
+      })
+      .where(eq(contents.id, id))
+      .returning();
+    return result;
+  }
+  
+  async deleteContent(id: number): Promise<boolean> {
+    const result = await db
+      .delete(contents)
+      .where(eq(contents.id, id));
+    return true;
+  }
 }
 
 export const storage = new DatabaseStorage();
