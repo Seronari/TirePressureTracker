@@ -189,13 +189,13 @@ export class DatabaseStorage implements IStorage {
 
 export const storage = new DatabaseStorage();
 
-// Create admin user if it doesn't exist
+// Create admin user only if table is empty
 (async () => {
   try {
-    // Check if admin user exists
-    const adminUser = await storage.getUserByUsername('admin');
-    if (!adminUser) {
-      // Create admin user
+    // First check if any users exist at all
+    const [result] = await db.select({ value: count() }).from(users);
+    if (result.value === 0) {
+      // Create admin user only if no users exist
       await storage.createUser({
         username: 'admin',
         password: 'admin123',
