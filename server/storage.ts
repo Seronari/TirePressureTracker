@@ -9,6 +9,8 @@ import {
   type InsertInquiry, 
   type InsertVisit 
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, gte, count, sql, desc } from "drizzle-orm";
 
 export interface IStorage {
   // User management
@@ -31,155 +33,149 @@ export interface IStorage {
   getVisitsOverTime(since: Date): Promise<Array<{date: string, count: number}>>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private inquiries: Map<number, Inquiry>;
-  private visits: Visit[];
-  private userIdCounter: number;
-  private inquiryIdCounter: number;
-  private visitIdCounter: number;
-
-  constructor() {
-    this.users = new Map();
-    this.inquiries = new Map();
-    this.visits = [];
-    this.userIdCounter = 1;
-    this.inquiryIdCounter = 1;
-    this.visitIdCounter = 1;
-  }
-
+export class DatabaseStorage implements IStorage {
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const result = await db.select().from(users).where(eq(users.id, id));
+    return result.length > 0 ? result[0] : undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username
-    );
+    const result = await db.select().from(users).where(eq(users.username, username));
+    return result.length > 0 ? result[0] : undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.userIdCounter++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
 
   // Inquiry methods
   async createInquiry(insertInquiry: InsertInquiry): Promise<Inquiry> {
-    const id = this.inquiryIdCounter++;
-    const createdAt = new Date();
-    const inquiry: Inquiry = { 
-      ...insertInquiry, 
-      id, 
-      status: "new", 
-      createdAt 
-    };
-    this.inquiries.set(id, inquiry);
+    const now = new Date();
+    const [inquiry] = await db.insert(inquiries).values({
+      ...insertInquiry,
+      status: "new",
+      createdAt: now
+    }).returning();
     return inquiry;
   }
 
   async getAllInquiries(): Promise<Inquiry[]> {
-    return Array.from(this.inquiries.values()).sort((a, b) => 
-      b.createdAt.getTime() - a.createdAt.getTime()
-    );
+    return await db.select().from(inquiries).orderBy(desc(inquiries.createdAt));
   }
 
   async getInquiry(id: number): Promise<Inquiry | undefined> {
-    return this.inquiries.get(id);
+    const result = await db.select().from(inquiries).where(eq(inquiries.id, id));
+    return result.length > 0 ? result[0] : undefined;
   }
 
   async updateInquiryStatus(id: number, status: string): Promise<Inquiry | undefined> {
-    const inquiry = this.inquiries.get(id);
-    if (!inquiry) return undefined;
-
-    const updatedInquiry = { ...inquiry, status };
-    this.inquiries.set(id, updatedInquiry);
+    const [updatedInquiry] = await db
+      .update(inquiries)
+      .set({ status })
+      .where(eq(inquiries.id, id))
+      .returning();
     return updatedInquiry;
   }
 
   async getInquiriesCount(since?: Date): Promise<number> {
-    if (!since) return this.inquiries.size;
+    if (!since) {
+      const [result] = await db.select({ value: count() }).from(inquiries);
+      return result.value;
+    }
     
-    return Array.from(this.inquiries.values()).filter(
-      inquiry => inquiry.createdAt >= since
-    ).length;
+    const [result] = await db
+      .select({ value: count() })
+      .from(inquiries)
+      .where(gte(inquiries.createdAt, since));
+    return result.value;
   }
 
   // Analytics methods
   async recordVisit(insertVisit: InsertVisit): Promise<Visit> {
-    const id = this.visitIdCounter++;
-    const date = new Date();
-    const visit: Visit = { ...insertVisit, id, date };
-    this.visits.push(visit);
+    const now = new Date();
+    const [visit] = await db.insert(visits).values({
+      ...insertVisit,
+      date: now
+    }).returning();
     return visit;
   }
 
   async getVisitsCount(since?: Date): Promise<number> {
-    if (!since) return this.visits.length;
+    if (!since) {
+      const [result] = await db.select({ value: count() }).from(visits);
+      return result.value;
+    }
     
-    return this.visits.filter(visit => visit.date >= since).length;
+    const [result] = await db
+      .select({ value: count() })
+      .from(visits)
+      .where(gte(visits.date, since));
+    return result.value;
   }
 
   async getTrafficSourcesBreakdown(): Promise<Array<{source: string, percentage: number}>> {
-    const sources = {
-      search: 0,
-      direct: 0,
-      social: 0,
-      other: 0
-    };
+    // Get total count
+    const [totalResult] = await db.select({ value: count() }).from(visits);
+    const total = totalResult.value || 1; // Avoid division by zero
     
-    this.visits.forEach(visit => {
-      if (visit.source === 'search') sources.search++;
-      else if (visit.source === 'direct') sources.direct++;
-      else if (visit.source === 'social') sources.social++;
-      else sources.other++;
-    });
+    // Get counts by source
+    const sources = ['search', 'direct', 'social', 'other'];
+    const result: Array<{source: string, percentage: number}> = [];
     
-    const total = this.visits.length || 1; // Avoid division by zero
+    for (const source of sources) {
+      const [sourceCount] = await db
+        .select({ value: count() })
+        .from(visits)
+        .where(eq(visits.source, source));
+      
+      const percentage = Math.round((sourceCount.value / total) * 100);
+      result.push({ source, percentage });
+    }
     
-    return [
-      { source: 'search', percentage: Math.round((sources.search / total) * 100) },
-      { source: 'direct', percentage: Math.round((sources.direct / total) * 100) },
-      { source: 'social', percentage: Math.round((sources.social / total) * 100) },
-      { source: 'other', percentage: Math.round((sources.other / total) * 100) }
-    ];
+    return result;
   }
 
   async getPopularPages(): Promise<Array<{page: string, count: number}>> {
-    const pages: Record<string, number> = {};
+    const result = await db
+      .select({
+        page: visits.page,
+        count: count(),
+      })
+      .from(visits)
+      .groupBy(visits.page)
+      .orderBy(desc(count()))
+      .limit(5);
     
-    this.visits.forEach(visit => {
-      pages[visit.page] = (pages[visit.page] || 0) + 1;
-    });
-    
-    return Object.entries(pages)
-      .map(([page, count]) => ({ page, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 5);
+    return result;
   }
 
   async getVisitsOverTime(since: Date): Promise<Array<{date: string, count: number}>> {
+    // Convert date to database format
+    const result = await db
+      .select({
+        date: sql<string>`DATE(${visits.date})`,
+        count: count(),
+      })
+      .from(visits)
+      .where(gte(visits.date, since))
+      .groupBy(sql`DATE(${visits.date})`)
+      .orderBy(sql`DATE(${visits.date})`);
+    
+    // Create a complete date range with zero values for missing dates
     const dateMap: Record<string, number> = {};
-    
-    // Filter visits that are after the since date
-    const filteredVisits = this.visits.filter(visit => visit.date >= since);
-    
-    // Group visits by date
-    filteredVisits.forEach(visit => {
-      const dateStr = visit.date.toISOString().split('T')[0];
-      dateMap[dateStr] = (dateMap[dateStr] || 0) + 1;
+    result.forEach(item => {
+      dateMap[item.date] = item.count;
     });
     
-    // Fill in missing dates with zero counts
-    const result: Array<{date: string, count: number}> = [];
+    const completeResult: Array<{date: string, count: number}> = [];
     const currentDate = new Date(since);
     const endDate = new Date();
     
     while (currentDate <= endDate) {
       const dateStr = currentDate.toISOString().split('T')[0];
-      result.push({
+      completeResult.push({
         date: dateStr,
         count: dateMap[dateStr] || 0
       });
@@ -187,26 +183,27 @@ export class MemStorage implements IStorage {
       currentDate.setDate(currentDate.getDate() + 1);
     }
     
-    return result;
+    return completeResult;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
 
-// Seed some initial data
+// Create admin user if it doesn't exist
 (async () => {
-  // Record some visits
-  const pages = ['/', '/products', '/services', '/contact'];
-  const sources = ['search', 'direct', 'social', 'other'];
-  
-  // Create 100 random visits over the last 30 days
-  for (let i = 0; i < 100; i++) {
-    const date = new Date();
-    date.setDate(date.getDate() - Math.floor(Math.random() * 30));
-    
-    await storage.recordVisit({
-      page: pages[Math.floor(Math.random() * pages.length)],
-      source: sources[Math.floor(Math.random() * sources.length)]
-    });
+  try {
+    // Check if admin user exists
+    const adminUser = await storage.getUserByUsername('admin');
+    if (!adminUser) {
+      // Create admin user
+      await storage.createUser({
+        username: 'admin',
+        password: 'admin123',
+        isAdmin: true
+      });
+      console.log('Admin user created');
+    }
+  } catch (error) {
+    console.error('Error creating admin user', error);
   }
 })();

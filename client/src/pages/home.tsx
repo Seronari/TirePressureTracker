@@ -117,7 +117,7 @@ export default function Home() {
                 </p>
                 <div className="flex gap-4 mt-8">
                   <div className="text-center">
-                    <p className="text-3xl font-bold text-primary">5+</p>
+                    <p className="text-3xl font-bold text-primary">10+</p>
                     <p className="text-mid-gray">{t('about.yearsOnMarket')}</p>
                   </div>
                   <div className="text-center">
