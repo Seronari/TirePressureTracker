@@ -239,7 +239,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Content Management Routes
+  // Content Management Routes - Public read-only endpoints
   app.get("/api/contents", async (req, res, next) => {
     try {
       const section = req.query.section as string;
@@ -272,6 +272,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // These endpoints require admin authentication
   app.post("/api/contents", ensureAdmin, async (req, res, next) => {
     try {
       const result = contentSchema.safeParse(req.body);
