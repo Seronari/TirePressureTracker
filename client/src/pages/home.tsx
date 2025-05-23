@@ -551,7 +551,9 @@ export default function Home() {
                       </div>
                       <div>
                         <p className="font-bold text-secondary mb-1">{t('contact.info.addressTitle')}:</p>
-                        <p className="text-dark-gray">{t('contact.info.address')}</p>
+                        <p className="text-dark-gray">{t('contact.info.address1')}</p>
+                        <p className="text-dark-gray">{t('contact.info.address2')}</p>
+                        <p className="text-dark-gray">{t('contact.info.address3')}</p>
                       </div>
                     </div>
                     

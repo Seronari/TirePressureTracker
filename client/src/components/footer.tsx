@@ -54,9 +54,13 @@ export default function Footer() {
           <div>
             <h3 className="text-xl font-bold mb-4 font-condensed">{t('footer.contacts')}</h3>
             <ul className="space-y-2">
-              <li className="flex items-center">
-                <MapPin className="w-5 h-5 mr-2 text-accent" />
-                <span className="text-gray-300">{t('contact.address')}</span>
+              <li className="flex items-start">
+                <MapPin className="w-5 h-5 mr-2 text-accent mt-0.5" />
+                <div className="text-gray-300">
+                  <div>{t('contact.info.address1')}</div>
+                  <div>{t('contact.info.address2')}</div>
+                  <div>{t('contact.info.address3')}</div>
+                </div>
               </li>
               <li className="flex items-center">
                 <Phone className="w-5 h-5 mr-2 text-accent" />
