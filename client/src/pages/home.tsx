@@ -210,9 +210,7 @@ export default function Home() {
                   </p>
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-bold text-primary">{t('products.universal.price')}</span>
-                    <Button className="bg-primary hover:bg-blue-800">
-                      {t('products.detailsButton')}
-                    </Button>
+                    <span className="text-sm text-gray-600 italic">Please contact us for additional information</span>
                   </div>
                 </div>
               </div>
@@ -230,9 +228,7 @@ export default function Home() {
                   </p>
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-bold text-primary">{t('products.oem.price')}</span>
-                    <Button className="bg-primary hover:bg-blue-800">
-                      {t('products.detailsButton')}
-                    </Button>
+                    <span className="text-sm text-gray-600 italic">Please contact us for additional information</span>
                   </div>
                 </div>
               </div>
@@ -250,9 +246,7 @@ export default function Home() {
                   </p>
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-bold text-primary">{t('products.programmers.price')}</span>
-                    <Button className="bg-primary hover:bg-blue-800">
-                      {t('products.detailsButton')}
-                    </Button>
+                    <span className="text-sm text-gray-600 italic">Please contact us for additional information</span>
                   </div>
                 </div>
               </div>
