@@ -258,12 +258,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="text-center mt-12">
-              <a href="#" className="inline-flex items-center font-bold text-primary hover:text-accent transition-colors duration-300">
-                {t('products.viewAllButton')}
-                <ChevronDown className="ml-2 h-4 w-4 rotate-270" />
-              </a>
-            </div>
+
           </div>
         </section>
 
