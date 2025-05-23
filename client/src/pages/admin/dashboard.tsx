@@ -114,12 +114,7 @@ export default function Dashboard() {
                 {t('Dashboard')}
               </a>
             </Link>
-            <Link href="/admin/content">
-              <a className="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:text-primary hover:border-b-2 hover:border-primary transition-colors">
-                <FileEdit className="w-4 h-4 mr-2" />
-                {t('Content Management')}
-              </a>
-            </Link>
+
           </nav>
         </div>
       </div>

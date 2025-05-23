@@ -11,7 +11,7 @@ import Footer from "@/components/footer";
 import Home from "@/pages/home";
 import Login from "@/pages/admin/login";
 import Dashboard from "@/pages/admin/dashboard";
-import ContentManager from "@/pages/admin/content-manager";
+
 import { apiRequest } from "./lib/queryClient";
 
 function Router() {
@@ -71,9 +71,7 @@ function Router() {
       <Route path="/admin/dashboard">
         {() => (user && user.isAdmin ? <Dashboard /> : <Login />)}
       </Route>
-      <Route path="/admin/content">
-        {() => (user && user.isAdmin ? <ContentManager /> : <Login />)}
-      </Route>
+
       <Route component={NotFound} />
     </Switch>
   );
