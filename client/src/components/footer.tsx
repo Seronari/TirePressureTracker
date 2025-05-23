@@ -23,7 +23,7 @@ export default function Footer() {
               <a href="https://wa.me/87054440440" target="_blank" rel="noopener noreferrer" className="text-white hover:text-accent transition-colors duration-300" aria-label="WhatsApp">
                 <FaWhatsapp />
               </a>
-              <a href="#" className="text-white hover:text-accent transition-colors duration-300" aria-label="Telegram">
+              <a href="https://t.me/87054440440" target="_blank" rel="noopener noreferrer" className="text-white hover:text-accent transition-colors duration-300" aria-label="Telegram">
                 <FaTelegramPlane />
               </a>
             </div>
