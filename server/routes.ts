@@ -1,6 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { telegramService } from "./telegram";
 import { 
   loginUserSchema, 
   insertInquirySchema, 
@@ -132,6 +133,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const inquiry = await storage.createInquiry(result.data);
+      
+      // Send Telegram notification (don't wait for it to complete)
+      telegramService.sendInquiryNotification(inquiry).catch(error => {
+        console.error('Failed to send Telegram notification:', error);
+      });
+      
       res.status(201).json(inquiry);
     } catch (error) {
       next(error);
@@ -317,6 +324,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json({ success: true });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Telegram test endpoint
+  app.post("/api/telegram/test", ensureAdmin, async (req, res, next) => {
+    try {
+      const success = await telegramService.sendTestMessage();
+      
+      if (success) {
+        res.json({ success: true, message: "Test message sent successfully" });
+      } else {
+        res.status(500).json({ success: false, message: "Failed to send test message" });
+      }
     } catch (error) {
       next(error);
     }
