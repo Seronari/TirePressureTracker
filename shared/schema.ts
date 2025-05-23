@@ -15,7 +15,7 @@ export const inquiries = pgTable("inquiries", {
   phone: text("phone").notNull(),
   email: text("email"),
   carModel: text("car_model"),
-  message: text("message").notNull(),
+  message: text("message"),
   status: text("status").notNull().default("new"), // 'new', 'processing', 'completed'
   createdAt: timestamp("created_at").defaultNow(),
 });

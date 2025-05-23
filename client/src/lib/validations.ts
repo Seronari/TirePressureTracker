@@ -5,7 +5,7 @@ export const inquiryFormSchema = z.object({
   phone: z.string().min(10, { message: 'phone.required' }).regex(/^\+?[0-9\s-()]+$/, { message: 'phone.invalid' }),
   email: z.string().email({ message: 'email.invalid' }).optional().or(z.literal('')),
   carModel: z.string().optional().or(z.literal('')),
-  message: z.string().min(5, { message: 'message.required' }),
+  message: z.string().optional().or(z.literal('')),
   terms: z.literal(true, {
     errorMap: () => ({ message: 'terms.required' })
   })
