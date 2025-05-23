@@ -35,6 +35,17 @@ export default function Home() {
   const { toast } = useToast();
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
 
+  // Image paths - replace these with your local images when deploying
+  const images = {
+    hero: '/images/hero-bg.jpg',
+    about: '/images/about-section.jpg',
+    products: {
+      universal: '/images/universal-sensors.jpg',
+      oem: '/images/oem-sensors.jpg',
+      programmers: '/images/programmers.jpg'
+    }
+  };
+
   const form = useForm<InquiryFormValues>({
     resolver: zodResolver(inquiryFormSchema),
     defaultValues: {
@@ -82,7 +93,7 @@ export default function Home() {
       <Header />
       <main className="pt-20">
         {/* Hero Section */}
-        <section className="bg-secondary text-white py-20 bg-cover bg-center relative" style={{backgroundImage: `linear-gradient(rgba(44, 62, 80, 0.85), rgba(44, 62, 80, 0.85)), url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=800')`}}>
+        <section className="bg-secondary text-white py-20 bg-cover bg-center relative" style={{backgroundImage: `linear-gradient(rgba(44, 62, 80, 0.85), rgba(44, 62, 80, 0.85)), url('${images.hero}')`}}>
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
               <h1 className="text-4xl md:text-5xl font-bold mb-4 font-condensed">
@@ -132,7 +143,7 @@ export default function Home() {
               </div>
               <div className="md:w-1/2">
                 <img 
-                  src="https://images.unsplash.com/photo-1486754735734-325b5831c3ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
+                  src={images.about} 
                   alt={t('about.imageAlt')} 
                   className="rounded-lg shadow-lg w-full h-auto"
                 />
@@ -188,7 +199,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="product-card">
                 <img 
-                  src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
+                  src={images.products.universal} 
                   alt={t('products.universal.imageAlt')} 
                   className="w-full h-48 object-cover"
                 />
@@ -208,7 +219,7 @@ export default function Home() {
               
               <div className="product-card">
                 <img 
-                  src="https://images.unsplash.com/photo-1504987634582-84921d4b8877?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
+                  src={images.products.oem} 
                   alt={t('products.oem.imageAlt')} 
                   className="w-full h-48 object-cover"
                 />
