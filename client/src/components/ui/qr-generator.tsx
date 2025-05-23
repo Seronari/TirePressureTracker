@@ -159,11 +159,16 @@ export function QRGenerator({ defaultText = '', title = 'QR Code Generator', cla
 export function ContactQRGenerator() {
   const contactInfo = `BEGIN:VCARD
 VERSION:3.0
-FN:TPMS Company
-ORG:TPMS Sensors
-TEL:+1234567890
-EMAIL:info@tpmscompany.com
-URL:https://yourwebsite.com
+FN:Farsensor
+ORG:Farsensor - TPMS Sensors
+TEL:+7 (705) 444-04-40
+TEL:+7 (777) 566-60-00
+TEL:+7 (778) 775-55-91
+EMAIL:info@farsensor.kz
+ADR:;;Yassaui St 195a ("Nash servis" service station);Almaty;;;Kazakhstan
+ADR:;;Krupskoi St 18;Almaty;;;Kazakhstan
+ADR:;;Goethe St 267a;Almaty;;;Kazakhstan
+URL:${window.location.origin}
 END:VCARD`;
 
   return (
