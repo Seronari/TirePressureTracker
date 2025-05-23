@@ -8,6 +8,7 @@ Create a folder called `images` in your website's public directory (usually `pub
 ## 2. Add Your Images
 Place your images in the folder with these exact names:
 
+- `logo.png` - Your company logo for the header (transparent background recommended)
 - `hero-bg.jpg` - Background image for the main hero section
 - `about-section.jpg` - Image for the About Us section  
 - `universal-sensors.jpg` - Image for Universal TPMS Sensors product
@@ -15,10 +16,12 @@ Place your images in the folder with these exact names:
 - `programmers.jpg` - Image for TPMS Programmers product
 
 ## 3. Image Recommendations
-- **Size**: Hero background should be at least 1920x800px, other images 800x600px
-- **Format**: JPG or PNG format
+- **Logo**: 200-400px wide, PNG format with transparent background
+- **Hero Background**: At least 1920x800px, JPG format
+- **Other Images**: 800x600px, JPG or PNG format
 - **Quality**: High quality but optimized for web (under 500KB each)
 - **Content**: 
+  - Logo: Your company logo with clear, readable text
   - Hero: Automotive/tire related background
   - About: Professional company or technology image
   - Products: Clear photos of TPMS sensors and equipment
