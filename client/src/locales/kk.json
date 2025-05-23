@@ -134,9 +134,9 @@
     "phone2": "+7 (701) 234-56-78",
     "email": "info@tpmspro.kz",
     "hours": {
-      "weekdays": "Дс-Жм: 9:00 - 18:00",
-      "saturday": "Сб: 10:00 - 15:00",
-      "sunday": "Жс: демалыс"
+      "weekdays": "Күн сайын: 9:00 - 19:00",
+      "saturday": "",
+      "sunday": ""
     },
     "successTitle": "Өтінім жіберілді!",
     "successMessage": "Рахмет! Біз сізбен жақын арада байланысамыз.",
