@@ -66,6 +66,23 @@ export default function Dashboard() {
     }
   };
 
+  const telegramTestMutation = useMutation({
+    mutationFn: () => apiRequest('/api/telegram/test', 'POST'),
+    onSuccess: () => {
+      toast({
+        title: "Telegram Test Successful",
+        description: "Test notification sent to your Telegram successfully!",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Telegram Test Failed", 
+        description: "Failed to send test notification. Please check your bot credentials.",
+        variant: 'destructive',
+      });
+    }
+  });
+
   return (
     <div className="min-h-screen bg-light">
       <header className="bg-primary text-white shadow-md">
@@ -134,6 +151,32 @@ export default function Dashboard() {
             icon={PieChart}
             color="bg-warning/10 text-warning"
           />
+        </div>
+
+        <div className="mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl font-bold text-secondary font-condensed flex items-center">
+                <MessageCircle className="w-5 h-5 mr-2" />
+                Telegram Notifications
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-secondary font-medium">Test Telegram Bot</p>
+                  <p className="text-sm text-mid-gray">Send a test message to verify notifications are working</p>
+                </div>
+                <Button 
+                  onClick={() => telegramTestMutation.mutate()}
+                  disabled={telegramTestMutation.isPending}
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  {telegramTestMutation.isPending ? 'Sending...' : 'Send Test Message'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
