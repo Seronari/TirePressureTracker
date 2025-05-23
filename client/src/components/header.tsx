@@ -31,19 +31,6 @@ export default function Header() {
           </div>
           
           <div className="hidden md:flex items-center space-x-6">
-            <Link href="/#about" className="text-secondary hover:text-primary transition-colors duration-300">
-              {t('nav.about')}
-            </Link>
-            <Link href="/#products" className="text-secondary hover:text-primary transition-colors duration-300">
-              {t('nav.products')}
-            </Link>
-            <Link href="/#services" className="text-secondary hover:text-primary transition-colors duration-300">
-              {t('nav.services')}
-            </Link>
-            <Link href="/#contact" className="text-secondary hover:text-primary transition-colors duration-300">
-              {t('nav.contact')}
-            </Link>
-            
             <LanguageSwitcher className="ml-4" />
             
             <Link href={user ? '/admin/dashboard' : '/admin/login'}>
@@ -65,23 +52,10 @@ export default function Header() {
         {/* Mobile Menu */}
         <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'} pb-4`}>
           <nav className="flex flex-col space-y-3">
-            <Link href="/#about" onClick={closeMenu} className="text-secondary hover:text-primary py-2 transition-colors duration-300">
-              {t('nav.about')}
-            </Link>
-            <Link href="/#products" onClick={closeMenu} className="text-secondary hover:text-primary py-2 transition-colors duration-300">
-              {t('nav.products')}
-            </Link>
-            <Link href="/#services" onClick={closeMenu} className="text-secondary hover:text-primary py-2 transition-colors duration-300">
-              {t('nav.services')}
-            </Link>
-            <Link href="/#contact" onClick={closeMenu} className="text-secondary hover:text-primary py-2 transition-colors duration-300">
-              {t('nav.contact')}
-            </Link>
-            
-            <div className="flex items-center py-2">
+            <div className="flex items-center justify-between py-2">
               <LanguageSwitcher />
               
-              <Link href={user ? '/admin/dashboard' : '/admin/login'} onClick={closeMenu} className="ml-auto text-sm text-primary hover:text-accent transition-colors duration-300">
+              <Link href={user ? '/admin/dashboard' : '/admin/login'} onClick={closeMenu} className="text-sm text-primary hover:text-accent transition-colors duration-300">
                 <User className="h-4 w-4 inline mr-1" />
                 {t('nav.admin')}
               </Link>
