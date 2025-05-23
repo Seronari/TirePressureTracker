@@ -1,7 +1,7 @@
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { MapPin, Phone, Smartphone, Mail } from 'lucide-react';
-import { FaFacebookF, FaInstagram, FaWhatsapp, FaTelegramPlane } from 'react-icons/fa';
+import { FaInstagram, FaWhatsapp, FaTelegramPlane } from 'react-icons/fa';
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -17,9 +17,6 @@ export default function Footer() {
               {t('footer.companyDescription')}
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-white hover:text-accent transition-colors duration-300" aria-label="Facebook">
-                <FaFacebookF />
-              </a>
               <a href="#" className="text-white hover:text-accent transition-colors duration-300" aria-label="Instagram">
                 <FaInstagram />
               </a>
