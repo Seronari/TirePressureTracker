@@ -286,6 +286,28 @@ export default function ContentManager() {
     }
   };
 
+  // Advanced action handlers
+  const handleToggleVisibility = (content: ContentItem) => {
+    toggleVisibilityMutation.mutate({ id: content.id, isVisible: !content.isVisible });
+  };
+
+  const handleDuplicate = (content: ContentItem) => {
+    duplicateMutation.mutate(content);
+  };
+
+  const handleMoveUp = (content: ContentItem) => {
+    if (content.order > 0) {
+      reorderMutation.mutate({ id: content.id, newOrder: content.order - 1 });
+    }
+  };
+
+  const handleMoveDown = (content: ContentItem) => {
+    const maxOrder = Math.max(...contents.filter(c => c.section === content.section).map(c => c.order));
+    if (content.order < maxOrder) {
+      reorderMutation.mutate({ id: content.id, newOrder: content.order + 1 });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-light">
       <header className="bg-primary text-white shadow-md">
@@ -533,8 +555,10 @@ export default function ContentManager() {
                     <Table>
                       <TableHeader>
                         <TableRow>
+                          <TableHead>Status</TableHead>
                           <TableHead>Key</TableHead>
                           <TableHead>Section</TableHead>
+                          <TableHead>Type</TableHead>
                           <TableHead>Order</TableHead>
                           <TableHead>Russian Title</TableHead>
                           <TableHead>Kazakh Title</TableHead>
@@ -543,29 +567,121 @@ export default function ContentManager() {
                       </TableHeader>
                       <TableBody>
                         {filteredContents.map((content) => (
-                          <TableRow key={content.id}>
+                          <TableRow key={content.id} className={!content.isVisible ? 'opacity-50 bg-gray-50' : ''}>
+                            {/* Status Column */}
+                            <TableCell>
+                              <div className="flex items-center space-x-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleToggleVisibility(content)}
+                                  className={content.isVisible ? 'text-green-600 hover:text-green-700' : 'text-gray-400 hover:text-gray-600'}
+                                >
+                                  {content.isVisible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                                </Button>
+                                <Badge variant={content.isVisible ? "default" : "secondary"}>
+                                  {content.isVisible ? "Visible" : "Hidden"}
+                                </Badge>
+                              </div>
+                            </TableCell>
+                            
+                            {/* Key Column */}
                             <TableCell className="font-mono text-sm">{content.key}</TableCell>
+                            
+                            {/* Section Column */}
                             <TableCell>
                               <Badge variant="outline">
                                 {content.section}
                               </Badge>
                             </TableCell>
-                            <TableCell>{content.order}</TableCell>
-                            <TableCell className="max-w-xs truncate">
-                              {content.title_ru || <span className="text-gray-400">No title</span>}
-                            </TableCell>
-                            <TableCell className="max-w-xs truncate">
-                              {content.title_kk || <span className="text-gray-400">No title</span>}
-                            </TableCell>
+                            
+                            {/* Content Type Column */}
                             <TableCell>
-                              <div className="flex items-center space-x-2">
+                              <div className="flex items-center space-x-1">
+                                {content.contentType === 'html' && <Code className="h-3 w-3" />}
+                                {content.contentType === 'markdown' && <Type className="h-3 w-3" />}
+                                {content.contentType === 'text' && <Type className="h-3 w-3" />}
+                                <span className="text-sm capitalize">{content.contentType}</span>
+                              </div>
+                            </TableCell>
+                            
+                            {/* Order Column */}
+                            <TableCell>
+                              <div className="flex items-center space-x-1">
+                                <span className="font-medium">{content.order}</span>
+                                <div className="flex flex-col space-y-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleMoveUp(content)}
+                                    disabled={content.order === 0}
+                                    className="h-4 w-4 p-0"
+                                  >
+                                    <ArrowUp className="h-3 w-3" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleMoveDown(content)}
+                                    className="h-4 w-4 p-0"
+                                  >
+                                    <ArrowDown className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </TableCell>
+                            
+                            {/* Russian Title Column */}
+                            <TableCell className="max-w-xs">
+                              <div className="truncate">
+                                {content.title_ru || <span className="text-gray-400 italic">No title</span>}
+                              </div>
+                              {content.cssClasses && (
+                                <div className="text-xs text-blue-600 font-mono mt-1">
+                                  .{content.cssClasses}
+                                </div>
+                              )}
+                            </TableCell>
+                            
+                            {/* Kazakh Title Column */}
+                            <TableCell className="max-w-xs truncate">
+                              {content.title_kk || <span className="text-gray-400 italic">No title</span>}
+                            </TableCell>
+                            
+                            {/* Actions Column */}
+                            <TableCell>
+                              <div className="flex items-center space-x-1">
+                                {/* Edit Button */}
                                 <Button
                                   variant="outline"
                                   size="sm"
                                   onClick={() => handleEditClick(content)}
+                                  className="text-blue-600 hover:text-blue-700"
                                 >
                                   <Edit className="h-4 w-4" />
                                 </Button>
+                                
+                                {/* Duplicate Button */}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleDuplicate(content)}
+                                  className="text-green-600 hover:text-green-700"
+                                >
+                                  <Copy className="h-4 w-4" />
+                                </Button>
+                                
+                                {/* Settings/Advanced Button */}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleEditClick(content)}
+                                  className="text-purple-600 hover:text-purple-700"
+                                >
+                                  <Settings className="h-4 w-4" />
+                                </Button>
+                                
+                                {/* Delete Button */}
                                 <Button
                                   variant="outline"
                                   size="sm"
