@@ -17,7 +17,7 @@ export default function Footer() {
               {t('footer.companyDescription')}
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-white hover:text-accent transition-colors duration-300" aria-label="Instagram">
+              <a href="https://www.instagram.com/tpms_kazahstan_11/?igsh=MW4yMjBvOXJ1cnZjYg%3D%3D&utm_source=qr#" target="_blank" rel="noopener noreferrer" className="text-white hover:text-accent transition-colors duration-300" aria-label="Instagram">
                 <FaInstagram />
               </a>
               <a href="#" className="text-white hover:text-accent transition-colors duration-300" aria-label="WhatsApp">
