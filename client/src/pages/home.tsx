@@ -197,54 +197,54 @@ export default function Home() {
             <h2 className="heading-lg mb-12 text-center">{t('products.title')}</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="product-card">
+              <div className="product-card h-full flex flex-col">
                 <img 
                   src={images.products.universal} 
                   alt={t('products.universal.imageAlt')} 
                   className="w-full h-48 object-cover"
                 />
-                <div className="p-6">
+                <div className="p-6 flex flex-col flex-grow">
                   <h3 className="text-xl font-bold mb-2 text-secondary font-condensed">{t('products.universal.title')}</h3>
-                  <p className="text-dark-gray mb-4">
+                  <p className="text-dark-gray mb-4 flex-grow">
                     {t('products.universal.description')}
                   </p>
-                  <div className="flex flex-col space-y-2">
+                  <div className="flex flex-col space-y-2 mt-auto">
                     <span className="text-lg font-bold text-primary">{t('products.universal.price')}</span>
                     <span className="text-sm text-gray-600 italic">{t('products.contactForInfo')}</span>
                   </div>
                 </div>
               </div>
               
-              <div className="product-card">
+              <div className="product-card h-full flex flex-col">
                 <img 
                   src={images.products.oem} 
                   alt={t('products.oem.imageAlt')} 
                   className="w-full h-48 object-cover"
                 />
-                <div className="p-6">
+                <div className="p-6 flex flex-col flex-grow">
                   <h3 className="text-xl font-bold mb-2 text-secondary font-condensed">{t('products.oem.title')}</h3>
-                  <p className="text-dark-gray mb-4">
+                  <p className="text-dark-gray mb-4 flex-grow">
                     {t('products.oem.description')}
                   </p>
-                  <div className="flex flex-col space-y-2">
+                  <div className="flex flex-col space-y-2 mt-auto">
                     <span className="text-lg font-bold text-primary">{t('products.oem.price')}</span>
                     <span className="text-sm text-gray-600 italic">{t('products.contactForInfo')}</span>
                   </div>
                 </div>
               </div>
               
-              <div className="product-card">
+              <div className="product-card h-full flex flex-col">
                 <img 
                   src={images.products.programmers} 
                   alt={t('products.programmers.imageAlt')} 
                   className="w-full h-48 object-cover"
                 />
-                <div className="p-6">
+                <div className="p-6 flex flex-col flex-grow">
                   <h3 className="text-xl font-bold mb-2 text-secondary font-condensed">{t('products.programmers.title')}</h3>
-                  <p className="text-dark-gray mb-4">
+                  <p className="text-dark-gray mb-4 flex-grow">
                     {t('products.programmers.description')}
                   </p>
-                  <div className="flex flex-col space-y-2">
+                  <div className="flex flex-col space-y-2 mt-auto">
                     <span className="text-lg font-bold text-primary">{t('products.programmers.price')}</span>
                     <span className="text-sm text-gray-600 italic">{t('products.contactForInfo')}</span>
                   </div>
