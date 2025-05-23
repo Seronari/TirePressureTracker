@@ -164,7 +164,7 @@ ORG:Farsensor - TPMS Sensors
 TEL:+7 (705) 444-04-40
 EMAIL:info@farsensor.kz
 ADR:;;Yassaui St 195a ("Nash servis" service station);Almaty;;;Kazakhstan
-URL:${window.location.origin}
+URL:https://farsensor.kz
 END:VCARD`;
 
   return (
@@ -175,7 +175,7 @@ END:VCARD`;
   );
 }
 
-export function WebsiteQRGenerator({ url = window.location.origin }: { url?: string }) {
+export function WebsiteQRGenerator({ url = "https://farsensor.kz" }: { url?: string }) {
   return (
     <QRGenerator
       defaultText={url}
