@@ -63,7 +63,7 @@ export default function Footer() {
                 <span className="text-gray-300">{t('contact.phone1')}</span>
               </li>
               <li className="flex items-center">
-                <Smartphone className="w-5 h-5 mr-2 text-accent" />
+                <Phone className="w-5 h-5 mr-2 text-accent" />
                 <span className="text-gray-300">{t('contact.phone2')}</span>
               </li>
               <li className="flex items-center">
