@@ -13,13 +13,19 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { 
   PlusCircle, 
   Edit, 
   Trash, 
   AlertCircle,
   FileEdit, 
-  LayoutDashboard 
+  LayoutDashboard,
+  Search,
+  Eye,
+  Copy,
+  Save,
+  RefreshCw
 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 
@@ -51,9 +57,12 @@ export default function ContentManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isPreviewDialogOpen, setIsPreviewDialogOpen] = useState(false);
   const [selectedContent, setSelectedContent] = useState<ContentItem | null>(null);
+  const [previewContent, setPreviewContent] = useState<ContentItem | null>(null);
   const [formValues, setFormValues] = useState<ContentFormValues>({
     key: '',
     title_ru: '',
@@ -139,10 +148,21 @@ export default function ContentManagement() {
     },
   });
 
-  // Filter contents based on active tab
-  const filteredContents = activeTab === 'all' 
-    ? contents 
-    : contents.filter(item => item.section === activeTab);
+  // Filter contents based on active tab and search query
+  const filteredContents = contents
+    .filter(item => activeTab === 'all' || item.section === activeTab)
+    .filter(item => {
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        item.key.toLowerCase().includes(query) ||
+        item.section.toLowerCase().includes(query) ||
+        (item.title_ru && item.title_ru.toLowerCase().includes(query)) ||
+        (item.title_kk && item.title_kk.toLowerCase().includes(query)) ||
+        (item.content_ru && item.content_ru.toLowerCase().includes(query)) ||
+        (item.content_kk && item.content_kk.toLowerCase().includes(query))
+      );
+    });
 
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -240,10 +260,11 @@ export default function ContentManagement() {
         </div>
       </div>
       
-      <div className="container mx-auto py-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold">{t('Website Content Editor')}</h1>
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+      <div className="container mx-auto py-6 px-4">
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold">{t('Website Content Editor')}</h1>
+            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button className="flex items-center gap-2">
                 <PlusCircle className="h-4 w-4" />
@@ -369,6 +390,28 @@ export default function ContentManagement() {
               </form>
             </DialogContent>
           </Dialog>
+          </div>
+
+          {/* Search and Stats Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder={t('Search content by key, title, or text...')}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-center bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-primary">{contents.length}</div>
+                <div className="text-sm text-gray-600">{t('Total Content Items')}</div>
+              </div>
+            </div>
+          </div>
         </div>
         
         <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
