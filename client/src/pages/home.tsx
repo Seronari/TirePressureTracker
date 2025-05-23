@@ -82,7 +82,7 @@ export default function Home() {
       <Header />
       <main className="pt-20">
         {/* Hero Section */}
-        <section className="bg-secondary text-white py-20 bg-cover bg-center relative" style={{backgroundImage: `linear-gradient(rgba(44, 62, 80, 0.85), rgba(44, 62, 80, 0.85)), url('https://images.unsplash.com/photo-1580274455191-1c62238fa333?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=800')`}}>
+        <section className="bg-secondary text-white py-20 bg-cover bg-center relative" style={{backgroundImage: `linear-gradient(rgba(44, 62, 80, 0.85), rgba(44, 62, 80, 0.85)), url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=800')`}}>
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
               <h1 className="text-4xl md:text-5xl font-bold mb-4 font-condensed">
@@ -132,7 +132,7 @@ export default function Home() {
               </div>
               <div className="md:w-1/2">
                 <img 
-                  src="https://pixabay.com/get/gb9a43e8815f87ae392125cfc7514a27da5bba771ea09090be920c1f11172113d5613781387e91fd72b3fe9091defedfbab6cf8a2145bef9639d5a14a450f0a27_1280.jpg" 
+                  src="https://images.unsplash.com/photo-1486754735734-325b5831c3ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
                   alt={t('about.imageAlt')} 
                   className="rounded-lg shadow-lg w-full h-auto"
                 />
@@ -188,7 +188,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="product-card">
                 <img 
-                  src="https://pixabay.com/get/gb69a2e643ae845c2385996da55b7e5fec518f4eb22eae486ee9ebd7f0cef724f3d2859c91ef2bd3ef3da807a8a9be6a9b7cd6561146f5f2b2e890e117cbd8bbb_1280.jpg" 
+                  src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
                   alt={t('products.universal.imageAlt')} 
                   className="w-full h-48 object-cover"
                 />
@@ -208,7 +208,7 @@ export default function Home() {
               
               <div className="product-card">
                 <img 
-                  src="https://pixabay.com/get/g7b0f12a6cba59d5118e01445e059874d5459d42a9ad037bb2ebfb0afd3e1708b9bf274825c1429e74e189b18f4e0e8908c8222686612f4958026e44955f46c1d_1280.jpg" 
+                  src="https://images.unsplash.com/photo-1504987634582-84921d4b8877?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
                   alt={t('products.oem.imageAlt')} 
                   className="w-full h-48 object-cover"
                 />
@@ -228,7 +228,7 @@ export default function Home() {
               
               <div className="product-card">
                 <img 
-                  src="https://pixabay.com/get/g6a61b09bedf12c743c4c284527f3f31adbd851038b33fcbd7b187bbbd5563d1ab77bede5a49dd54a2de67545959afa4319d3c5edda58df8a392312631b134339_1280.jpg" 
+                  src="https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
                   alt={t('products.programmers.imageAlt')} 
                   className="w-full h-48 object-cover"
                 />
