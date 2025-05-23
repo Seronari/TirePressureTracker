@@ -9,6 +9,7 @@ import NotFound from "@/pages/not-found";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Home from "@/pages/home";
+import QRCodes from "@/pages/qr-codes";
 import Login from "@/pages/admin/login";
 import Dashboard from "@/pages/admin/dashboard";
 
@@ -65,6 +66,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/qr-codes" component={QRCodes} />
       <Route path="/admin/login">
         {() => (user ? <Dashboard /> : <Login />)}
       </Route>
