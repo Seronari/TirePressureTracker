@@ -67,7 +67,7 @@ export default function Dashboard() {
   };
 
   const telegramTestMutation = useMutation({
-    mutationFn: () => apiRequest('/api/telegram/test', 'POST'),
+    mutationFn: () => apiRequest('POST', '/api/telegram/test'),
     onSuccess: () => {
       toast({
         title: "Telegram Test Successful",
