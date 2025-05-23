@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation, Link } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '@/lib/queryClient';
 import { StatsCard } from '@/components/admin/stats-card';
 import { VisitsChart } from '@/components/admin/chart';
 import { TrafficSources } from '@/components/admin/traffic-sources';
 import { InquiryTable } from '@/components/admin/inquiry-table';
-import { ClipboardList, Users, PieChart, FileEdit, LayoutDashboard } from 'lucide-react';
+import { ClipboardList, Users, PieChart, FileEdit, LayoutDashboard, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
