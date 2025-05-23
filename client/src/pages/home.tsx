@@ -498,7 +498,7 @@ export default function Home() {
                         name="message"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>{t('contact.form.message')}*</FormLabel>
+                            <FormLabel>{t('contact.form.message')}</FormLabel>
                             <FormControl>
                               <Textarea rows={4} {...field} />
                             </FormControl>
