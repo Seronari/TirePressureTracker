@@ -239,7 +239,7 @@ export default function Home() {
               
               <div className="product-card">
                 <img 
-                  src="https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
+                  src={images.products.programmers} 
                   alt={t('products.programmers.imageAlt')} 
                   className="w-full h-48 object-cover"
                 />
