@@ -36,6 +36,10 @@ export const contents = pgTable("contents", {
   content_kk: text("content_kk"),
   section: text("section").notNull(),
   order: integer("order").notNull(),
+  isVisible: boolean("is_visible").default(true).notNull(),
+  contentType: text("content_type").default("text").notNull(), // 'text', 'html', 'markdown'
+  cssClasses: text("css_classes"),
+  metadata: text("metadata"), // JSON string for additional data
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 

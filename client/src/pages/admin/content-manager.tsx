@@ -23,7 +23,15 @@ import {
   LayoutDashboard,
   Search,
   Eye,
-  Save
+  EyeOff,
+  Save,
+  Copy,
+  ArrowUp,
+  ArrowDown,
+  Settings,
+  Code,
+  Type,
+  Palette
 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 
@@ -36,6 +44,10 @@ interface ContentItem {
   content_kk: string | null;
   section: string;
   order: number;
+  isVisible: boolean;
+  contentType: string;
+  cssClasses: string | null;
+  metadata: string | null;
   updatedAt: string;
 }
 
@@ -47,6 +59,10 @@ interface ContentFormValues {
   content_kk: string;
   section: string;
   order: number;
+  isVisible: boolean;
+  contentType: string;
+  cssClasses: string;
+  metadata: string;
 }
 
 export default function ContentManager() {
@@ -66,6 +82,10 @@ export default function ContentManager() {
     content_kk: '',
     section: 'hero',
     order: 0,
+    isVisible: true,
+    contentType: 'text',
+    cssClasses: '',
+    metadata: '',
   });
 
   // Get all content items
@@ -142,6 +162,49 @@ export default function ContentManager() {
     },
   });
 
+  // Toggle visibility mutation
+  const toggleVisibilityMutation = useMutation({
+    mutationFn: ({ id, isVisible }: { id: number; isVisible: boolean }) => 
+      apiRequest('PUT', `/api/contents/${id}`, { isVisible }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/contents'] });
+      toast({
+        title: "Visibility Updated",
+        description: "Content visibility has been changed",
+      });
+    },
+  });
+
+  // Duplicate content mutation
+  const duplicateMutation = useMutation({
+    mutationFn: (content: ContentItem) => {
+      const newContent = {
+        ...content,
+        key: `${content.key}_copy`,
+        order: content.order + 1,
+      };
+      delete (newContent as any).id;
+      delete (newContent as any).updatedAt;
+      return apiRequest('POST', '/api/contents', newContent);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/contents'] });
+      toast({
+        title: "Content Duplicated",
+        description: "Content has been duplicated successfully",
+      });
+    },
+  });
+
+  // Reorder content mutation
+  const reorderMutation = useMutation({
+    mutationFn: ({ id, newOrder }: { id: number; newOrder: number }) => 
+      apiRequest('PUT', `/api/contents/${id}`, { order: newOrder }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/contents'] });
+    },
+  });
+
   // Filter contents based on search and tab
   const filteredContents = contents
     .filter(item => activeTab === 'all' || item.section === activeTab)
@@ -180,6 +243,10 @@ export default function ContentManager() {
       content_kk: '',
       section: 'hero',
       order: 0,
+      isVisible: true,
+      contentType: 'text',
+      cssClasses: '',
+      metadata: '',
     });
   };
 
@@ -193,6 +260,10 @@ export default function ContentManager() {
       content_kk: content.content_kk || '',
       section: content.section,
       order: content.order,
+      isVisible: content.isVisible,
+      contentType: content.contentType,
+      cssClasses: content.cssClasses || '',
+      metadata: content.metadata || '',
     });
     setIsEditDialogOpen(true);
   };
