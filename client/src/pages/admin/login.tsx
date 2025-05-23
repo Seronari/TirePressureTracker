@@ -67,7 +67,7 @@ export default function Login() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-primary font-condensed">
-            TPMS<span className="text-accent">Pro</span>
+            Far<span className="text-accent">sensor</span>
           </h1>
           <p className="text-secondary mt-2">{t('admin.login.subtitle')}</p>
         </div>

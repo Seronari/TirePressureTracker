@@ -90,7 +90,7 @@ export default function Dashboard() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <a href="/" className="text-2xl font-bold font-condensed">
-                TPMS<span className="text-accent">Pro</span> <span className="text-sm ml-2">| {t('admin.dashboard.title')}</span>
+                Far<span className="text-accent">sensor</span> <span className="text-sm ml-2">| {t('admin.dashboard.title')}</span>
               </a>
             </div>
             

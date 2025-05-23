@@ -84,7 +84,7 @@ export default function Footer() {
         
         <div className="border-t border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm mb-4 md:mb-0">
-            © {currentYear} TPMSPro. {t('footer.rights')}
+            © {currentYear} Farsensor. {t('footer.rights')}
           </p>
           <div className="flex space-x-6">
             <Link href="#" className="text-gray-400 hover:text-white text-sm transition-colors duration-300">{t('footer.privacy')}</Link>
