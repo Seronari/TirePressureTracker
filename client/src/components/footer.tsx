@@ -20,10 +20,10 @@ export default function Footer() {
               <a href="https://www.instagram.com/tpms_kazahstan_11/?igsh=MW4yMjBvOXJ1cnZjYg%3D%3D&utm_source=qr#" target="_blank" rel="noopener noreferrer" className="text-white hover:text-accent transition-colors duration-300" aria-label="Instagram">
                 <FaInstagram />
               </a>
-              <a href="https://wa.me/87054440440" target="_blank" rel="noopener noreferrer" className="text-white hover:text-accent transition-colors duration-300" aria-label="WhatsApp">
+              <a href="https://wa.me/+77054440440" target="_blank" rel="noopener noreferrer" className="text-white hover:text-accent transition-colors duration-300" aria-label="WhatsApp">
                 <FaWhatsapp />
               </a>
-              <a href="https://t.me/87054440440" target="_blank" rel="noopener noreferrer" className="text-white hover:text-accent transition-colors duration-300" aria-label="Telegram">
+              <a href="https://t.me/+77054440440" target="_blank" rel="noopener noreferrer" className="text-white hover:text-accent transition-colors duration-300" aria-label="Telegram">
                 <FaTelegramPlane />
               </a>
             </div>
