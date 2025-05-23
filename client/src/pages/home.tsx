@@ -208,7 +208,7 @@ export default function Home() {
                   <p className="text-dark-gray mb-4">
                     {t('products.universal.description')}
                   </p>
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col space-y-2">
                     <span className="text-lg font-bold text-primary">{t('products.universal.price')}</span>
                     <span className="text-sm text-gray-600 italic">{t('products.contactForInfo')}</span>
                   </div>
@@ -226,7 +226,7 @@ export default function Home() {
                   <p className="text-dark-gray mb-4">
                     {t('products.oem.description')}
                   </p>
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col space-y-2">
                     <span className="text-lg font-bold text-primary">{t('products.oem.price')}</span>
                     <span className="text-sm text-gray-600 italic">{t('products.contactForInfo')}</span>
                   </div>
@@ -244,7 +244,7 @@ export default function Home() {
                   <p className="text-dark-gray mb-4">
                     {t('products.programmers.description')}
                   </p>
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col space-y-2">
                     <span className="text-lg font-bold text-primary">{t('products.programmers.price')}</span>
                     <span className="text-sm text-gray-600 italic">{t('products.contactForInfo')}</span>
                   </div>
