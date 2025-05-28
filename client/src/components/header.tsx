@@ -39,8 +39,8 @@ export default function Header() {
             <Link href="/" className="flex items-center">
               <img 
                 src="/images/logo.png" 
-                alt="Company Logo" 
-                className="h-12 w-auto"
+                alt="Farsensor Logo" 
+                className="h-16 w-auto"
               />
             </Link>
           </div>
