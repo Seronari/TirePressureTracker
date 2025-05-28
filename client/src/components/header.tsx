@@ -32,7 +32,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+    <header className="bg-black shadow-md fixed top-0 left-0 right-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center">
@@ -46,23 +46,23 @@ export default function Header() {
           </div>
           
           <div className="hidden md:flex items-center space-x-6">
-            <button onClick={() => scrollToSection('about')} className="text-secondary hover:text-primary transition-colors duration-300">
+            <button onClick={() => scrollToSection('about')} className="text-primary hover:text-yellow-400 transition-colors duration-300">
               {t('nav.about')}
             </button>
-            <button onClick={() => scrollToSection('products')} className="text-secondary hover:text-primary transition-colors duration-300">
+            <button onClick={() => scrollToSection('products')} className="text-primary hover:text-yellow-400 transition-colors duration-300">
               {t('nav.products')}
             </button>
-            <button onClick={() => scrollToSection('services')} className="text-secondary hover:text-primary transition-colors duration-300">
+            <button onClick={() => scrollToSection('services')} className="text-primary hover:text-yellow-400 transition-colors duration-300">
               {t('nav.services')}
             </button>
-            <button onClick={() => scrollToSection('contact')} className="text-secondary hover:text-primary transition-colors duration-300">
+            <button onClick={() => scrollToSection('contact')} className="text-primary hover:text-yellow-400 transition-colors duration-300">
               {t('nav.contact')}
             </button>
             
             <LanguageSwitcher className="ml-4" />
             
             <Link href={user ? '/admin/dashboard' : '/admin/login'}>
-              <Button variant="ghost" className="ml-4 text-sm text-primary hover:text-accent transition-colors duration-300">
+              <Button variant="ghost" className="ml-4 text-sm text-primary hover:text-yellow-400 transition-colors duration-300">
                 <User className="h-4 w-4 mr-1" />
                 {t('nav.admin')}
               </Button>
@@ -71,7 +71,7 @@ export default function Header() {
           
           {/* Mobile Menu Button */}
           <div className="md:hidden">
-            <Button variant="ghost" onClick={toggleMenu} className="text-secondary focus:outline-none">
+            <Button variant="ghost" onClick={toggleMenu} className="text-primary focus:outline-none">
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
@@ -80,23 +80,23 @@ export default function Header() {
         {/* Mobile Menu */}
         <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'} pb-4`}>
           <nav className="flex flex-col space-y-3">
-            <button onClick={() => scrollToSection('about')} className="text-secondary hover:text-primary py-2 transition-colors duration-300 text-left">
+            <button onClick={() => scrollToSection('about')} className="text-primary hover:text-yellow-400 py-2 transition-colors duration-300 text-left">
               {t('nav.about')}
             </button>
-            <button onClick={() => scrollToSection('products')} className="text-secondary hover:text-primary py-2 transition-colors duration-300 text-left">
+            <button onClick={() => scrollToSection('products')} className="text-primary hover:text-yellow-400 py-2 transition-colors duration-300 text-left">
               {t('nav.products')}
             </button>
-            <button onClick={() => scrollToSection('services')} className="text-secondary hover:text-primary py-2 transition-colors duration-300 text-left">
+            <button onClick={() => scrollToSection('services')} className="text-primary hover:text-yellow-400 py-2 transition-colors duration-300 text-left">
               {t('nav.services')}
             </button>
-            <button onClick={() => scrollToSection('contact')} className="text-secondary hover:text-primary py-2 transition-colors duration-300 text-left">
+            <button onClick={() => scrollToSection('contact')} className="text-primary hover:text-yellow-400 py-2 transition-colors duration-300 text-left">
               {t('nav.contact')}
             </button>
             
             <div className="flex items-center justify-between py-2">
               <LanguageSwitcher />
               
-              <Link href={user ? '/admin/dashboard' : '/admin/login'} onClick={closeMenu} className="text-sm text-primary hover:text-accent transition-colors duration-300">
+              <Link href={user ? '/admin/dashboard' : '/admin/login'} onClick={closeMenu} className="text-sm text-primary hover:text-yellow-400 transition-colors duration-300">
                 <User className="h-4 w-4 inline mr-1" />
                 {t('nav.admin')}
               </Link>
