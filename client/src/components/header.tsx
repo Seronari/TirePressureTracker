@@ -34,13 +34,13 @@ export default function Header() {
   return (
     <header className="bg-black shadow-md fixed top-0 left-0 right-0 z-50">
       <div className="container mx-auto">
-        <div className="flex justify-between items-center py-1 pl-2 pr-4">
+        <div className="flex justify-between items-center py-3 pl-0 pr-4">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <img 
                 src="/images/logo.png" 
                 alt="Farsensor Logo" 
-                className="h-18 w-auto"
+                className="h-14 w-auto"
               />
             </Link>
           </div>
