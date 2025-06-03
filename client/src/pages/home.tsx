@@ -91,7 +91,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="pt-20">
+      <main>
         {/* Hero Section */}
         <section className="bg-secondary text-white py-20 bg-cover bg-center relative" style={{backgroundImage: `linear-gradient(rgba(44, 62, 80, 0.85), rgba(44, 62, 80, 0.85)), url('${images.hero}')`}}>
           <div className="container mx-auto px-4">
