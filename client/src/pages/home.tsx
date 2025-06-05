@@ -332,7 +332,7 @@ export default function Home() {
             <div className="flex flex-col md:flex-row items-center gap-12">
               <div className="md:w-1/2 order-2 md:order-1">
                 <img 
-                  src="https://images.unsplash.com/photo-1552748322-922e93d25c2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400" 
+                  src="/images/tpms-dashboard.jpg" 
                   alt={t('info.imageAlt')} 
                   className="rounded-lg shadow-lg w-full h-auto"
                 />
