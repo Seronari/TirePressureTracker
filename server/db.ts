@@ -2,37 +2,28 @@ import mysql from 'mysql2/promise';
 import { drizzle } from 'drizzle-orm/mysql2';
 import * as schema from "@shared/schema";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
-}
+// Create a connection pool for better performance
+const pool = mysql.createPool({
+  host: process.env.PGHOST || 'localhost',
+  port: parseInt(process.env.PGPORT || '3306'),
+  user: process.env.PGUSER || 'root',
+  password: process.env.PGPASSWORD || '',
+  database: process.env.PGDATABASE || 'farsensor',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
 
-// Parse the DATABASE_URL to extract connection parameters
-const dbUrl = new URL(process.env.DATABASE_URL);
-const connectionConfig = {
-  host: dbUrl.hostname,
-  port: parseInt(dbUrl.port) || 3306,
-  user: dbUrl.username,
-  password: dbUrl.password,
-  database: dbUrl.pathname.slice(1), // Remove the leading slash
-  connectTimeout: 10000,
-};
+export const db = drizzle(pool, { schema, mode: 'default' });
 
-let connection: mysql.Connection;
-let db: ReturnType<typeof drizzle>;
-
-async function initializeDatabase() {
+export async function testConnection() {
   try {
-    connection = await mysql.createConnection(connectionConfig);
-    db = drizzle(connection, { schema, mode: 'default' });
+    const connection = await pool.getConnection();
     console.log('Database connected successfully');
-    return { connection, db };
+    connection.release();
+    return true;
   } catch (error) {
     console.error('Database connection failed:', error);
-    throw error;
+    return false;
   }
 }
-
-export { initializeDatabase };
-export { connection, db };
