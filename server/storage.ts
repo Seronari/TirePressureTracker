@@ -13,8 +13,6 @@ import {
   type InsertContent,
   type UpdateContent
 } from "@shared/schema";
-import { db } from "./db";
-import { eq, gte, count, sql, desc, asc } from "drizzle-orm";
 
 export interface IStorage {
   // User management
