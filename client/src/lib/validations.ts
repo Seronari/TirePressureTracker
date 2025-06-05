@@ -6,8 +6,8 @@ export const inquiryFormSchema = z.object({
   email: z.string().email({ message: 'email.invalid' }).optional().or(z.literal('')),
   carModel: z.string().optional().or(z.literal('')),
   message: z.string().optional().or(z.literal('')),
-  terms: z.literal(true, {
-    errorMap: () => ({ message: 'terms.required' })
+  terms: z.boolean().refine(val => val === true, {
+    message: 'terms.required'
   })
 });
 
