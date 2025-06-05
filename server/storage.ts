@@ -1,4 +1,8 @@
 import { 
+  users, 
+  inquiries, 
+  visits, 
+  contents,
   type User, 
   type Inquiry, 
   type Visit, 
@@ -9,6 +13,8 @@ import {
   type InsertContent,
   type UpdateContent
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, gte, count, sql, desc, asc } from "drizzle-orm";
 
 export interface IStorage {
   // User management
@@ -40,222 +46,239 @@ export interface IStorage {
   deleteContent(id: number): Promise<boolean>;
 }
 
-class MemStorage implements IStorage {
-  private users: User[] = [];
-  private inquiries: Inquiry[] = [];
-  private visits: Visit[] = [];
-  private contents: Content[] = [];
-  private nextUserId = 1;
-  private nextInquiryId = 1;
-  private nextVisitId = 1;
-  private nextContentId = 1;
-
-  constructor() {
-    // Initialize with default admin user
-    this.users.push({
-      id: this.nextUserId++,
-      username: "admin",
-      password: "$2b$10$8K1p/a0dhrxSHxHmy4q/h.uN7.1l.JX9.S8D7SJXE4E.9E1.E4E4E", // "admin123"
-      isAdmin: true
-    });
-
-    // Add some sample content
-    this.contents.push(
-      {
-        id: this.nextContentId++,
-        key: "hero_title",
-        section: "hero",
-        title_ru: "Профессиональные TPMS датчики",
-        title_kk: "Кәсіби TPMS датчиктері",
-        content_ru: "Высококачественные датчики давления шин для вашего автомобиля",
-        content_kk: "Сіздің автомобиліңіз үшін жоғары сапалы дөңгелек қысымы датчиктері",
-        order: 1,
-        isVisible: true,
-        contentType: "text",
-        cssClasses: null,
-        metadata: null,
-        updatedAt: new Date()
-      }
-    );
-  }
-
+export class DatabaseStorage implements IStorage {
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.find(u => u.id === id);
+    const result = await db.select().from(users).where(eq(users.id, id));
+    return result.length > 0 ? result[0] : undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return this.users.find(u => u.username === username);
+    const result = await db.select().from(users).where(eq(users.username, username));
+    return result.length > 0 ? result[0] : undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const user: User = {
-      id: this.nextUserId++,
-      username: insertUser.username,
-      password: insertUser.password,
-      isAdmin: insertUser.isAdmin || false
-    };
-    this.users.push(user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
 
   // Inquiry methods
   async createInquiry(insertInquiry: InsertInquiry): Promise<Inquiry> {
-    const inquiry: Inquiry = {
-      id: this.nextInquiryId++,
-      name: insertInquiry.name,
-      phone: insertInquiry.phone,
-      email: insertInquiry.email || null,
-      carModel: insertInquiry.carModel || null,
-      message: insertInquiry.message || null,
+    const now = new Date();
+    const [inquiry] = await db.insert(inquiries).values({
+      ...insertInquiry,
       status: "new",
-      createdAt: new Date()
-    };
-    this.inquiries.push(inquiry);
+      createdAt: now
+    }).returning();
     return inquiry;
   }
 
   async getAllInquiries(): Promise<Inquiry[]> {
-    return [...this.inquiries].sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    return await db.select().from(inquiries).orderBy(desc(inquiries.createdAt));
   }
 
   async getInquiry(id: number): Promise<Inquiry | undefined> {
-    return this.inquiries.find(i => i.id === id);
+    const result = await db.select().from(inquiries).where(eq(inquiries.id, id));
+    return result.length > 0 ? result[0] : undefined;
   }
 
   async updateInquiryStatus(id: number, status: string): Promise<Inquiry | undefined> {
-    const inquiry = this.inquiries.find(i => i.id === id);
-    if (inquiry) {
-      inquiry.status = status;
-    }
-    return inquiry;
+    const [updatedInquiry] = await db
+      .update(inquiries)
+      .set({ status })
+      .where(eq(inquiries.id, id))
+      .returning();
+    return updatedInquiry;
   }
 
   async getInquiriesCount(since?: Date): Promise<number> {
-    if (!since) return this.inquiries.length;
-    return this.inquiries.filter(i => new Date(i.createdAt) >= since).length;
+    if (!since) {
+      const [result] = await db.select({ value: count() }).from(inquiries);
+      return result.value;
+    }
+    
+    const [result] = await db
+      .select({ value: count() })
+      .from(inquiries)
+      .where(gte(inquiries.createdAt, since));
+    return result.value;
   }
 
   // Analytics methods
   async recordVisit(insertVisit: InsertVisit): Promise<Visit> {
-    const visit: Visit = {
-      id: this.nextVisitId++,
-      date: new Date(),
-      page: insertVisit.page,
-      source: insertVisit.source || null
-    };
-    this.visits.push(visit);
+    const now = new Date();
+    const [visit] = await db.insert(visits).values({
+      ...insertVisit,
+      date: now
+    }).returning();
     return visit;
   }
 
   async getVisitsCount(since?: Date): Promise<number> {
-    if (!since) return this.visits.length;
-    return this.visits.filter(v => new Date(v.date) >= since).length;
+    if (!since) {
+      const [result] = await db.select({ value: count() }).from(visits);
+      return result.value;
+    }
+    
+    const [result] = await db
+      .select({ value: count() })
+      .from(visits)
+      .where(gte(visits.date, since));
+    return result.value;
   }
 
   async getTrafficSourcesBreakdown(): Promise<Array<{source: string, percentage: number}>> {
-    const totalVisits = this.visits.length;
-    if (totalVisits === 0) return [];
-
-    const sourceCounts = this.visits.reduce((acc, visit) => {
-      const source = visit.source || 'direct';
-      acc[source] = (acc[source] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    return Object.entries(sourceCounts).map(([source, count]) => ({
-      source,
-      percentage: Math.round((count / totalVisits) * 100)
-    }));
+    // Get total count
+    const [totalResult] = await db.select({ value: count() }).from(visits);
+    const total = totalResult.value || 1; // Avoid division by zero
+    
+    // Get counts by source
+    const sources = ['search', 'direct', 'social', 'other'];
+    const result: Array<{source: string, percentage: number}> = [];
+    
+    for (const source of sources) {
+      const [sourceCount] = await db
+        .select({ value: count() })
+        .from(visits)
+        .where(eq(visits.source, source));
+      
+      const percentage = Math.round((sourceCount.value / total) * 100);
+      result.push({ source, percentage });
+    }
+    
+    return result;
   }
 
   async getPopularPages(): Promise<Array<{page: string, count: number}>> {
-    const pageCounts = this.visits.reduce((acc, visit) => {
-      acc[visit.page] = (acc[visit.page] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    return Object.entries(pageCounts)
-      .map(([page, count]) => ({ page, count }))
-      .sort((a, b) => b.count - a.count);
+    const result = await db
+      .select({
+        page: visits.page,
+        count: count(),
+      })
+      .from(visits)
+      .groupBy(visits.page)
+      .orderBy(desc(count()))
+      .limit(5);
+    
+    return result;
   }
 
   async getVisitsOverTime(since: Date): Promise<Array<{date: string, count: number}>> {
-    const filteredVisits = this.visits.filter(v => new Date(v.date) >= since);
+    // Convert date to database format
+    const result = await db
+      .select({
+        date: sql<string>`DATE(${visits.date})`,
+        count: count(),
+      })
+      .from(visits)
+      .where(gte(visits.date, since))
+      .groupBy(sql`DATE(${visits.date})`)
+      .orderBy(sql`DATE(${visits.date})`);
     
-    const dateCounts = filteredVisits.reduce((acc, visit) => {
-      const dateStr = new Date(visit.date).toISOString().split('T')[0];
-      acc[dateStr] = (acc[dateStr] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    return Object.entries(dateCounts)
-      .map(([date, count]) => ({ date, count }))
-      .sort((a, b) => a.date.localeCompare(b.date));
-  }
-
-  // Content methods
-  async getAllContents(): Promise<Content[]> {
-    return [...this.contents].sort((a, b) => {
-      if (a.section !== b.section) {
-        return a.section.localeCompare(b.section);
-      }
-      return a.order - b.order;
+    // Create a complete date range with zero values for missing dates
+    const dateMap: Record<string, number> = {};
+    result.forEach(item => {
+      dateMap[item.date] = item.count;
     });
+    
+    const completeResult: Array<{date: string, count: number}> = [];
+    const currentDate = new Date(since);
+    const endDate = new Date();
+    
+    while (currentDate <= endDate) {
+      const dateStr = currentDate.toISOString().split('T')[0];
+      completeResult.push({
+        date: dateStr,
+        count: dateMap[dateStr] || 0
+      });
+      
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    return completeResult;
   }
-
+  
+  // Content Management methods
+  async getAllContents(): Promise<Content[]> {
+    return await db
+      .select()
+      .from(contents)
+      .orderBy(asc(contents.section), asc(contents.order));
+  }
+  
   async getContentsBySection(section: string): Promise<Content[]> {
-    return this.contents
-      .filter(c => c.section === section)
-      .sort((a, b) => a.order - b.order);
+    return await db
+      .select()
+      .from(contents)
+      .where(eq(contents.section, section))
+      .orderBy(asc(contents.order));
   }
-
+  
   async getContent(id: number): Promise<Content | undefined> {
-    return this.contents.find(c => c.id === id);
+    const result = await db
+      .select()
+      .from(contents)
+      .where(eq(contents.id, id));
+    return result.length > 0 ? result[0] : undefined;
   }
-
+  
   async getContentByKey(key: string): Promise<Content | undefined> {
-    return this.contents.find(c => c.key === key);
+    const result = await db
+      .select()
+      .from(contents)
+      .where(eq(contents.key, key));
+    return result.length > 0 ? result[0] : undefined;
   }
-
-  async createContent(insertContent: InsertContent): Promise<Content> {
-    const content: Content = {
-      id: this.nextContentId++,
-      key: insertContent.key,
-      section: insertContent.section,
-      title_ru: insertContent.title_ru || null,
-      title_kk: insertContent.title_kk || null,
-      content_ru: insertContent.content_ru || null,
-      content_kk: insertContent.content_kk || null,
-      order: insertContent.order,
-      isVisible: insertContent.isVisible !== undefined ? insertContent.isVisible : true,
-      contentType: insertContent.contentType || "text",
-      cssClasses: insertContent.cssClasses || null,
-      metadata: insertContent.metadata || null,
-      updatedAt: new Date()
-    };
-    this.contents.push(content);
-    return content;
+  
+  async createContent(content: InsertContent): Promise<Content> {
+    const [result] = await db
+      .insert(contents)
+      .values({
+        ...content,
+        updatedAt: new Date()
+      })
+      .returning();
+    return result;
   }
-
-  async updateContent(id: number, updateContent: UpdateContent): Promise<Content | undefined> {
-    const content = this.contents.find(c => c.id === id);
-    if (content) {
-      Object.assign(content, updateContent, { updatedAt: new Date() });
-    }
-    return content;
+  
+  async updateContent(id: number, content: UpdateContent): Promise<Content | undefined> {
+    const [result] = await db
+      .update(contents)
+      .set({
+        ...content,
+        updatedAt: new Date()
+      })
+      .where(eq(contents.id, id))
+      .returning();
+    return result;
   }
-
+  
   async deleteContent(id: number): Promise<boolean> {
-    const index = this.contents.findIndex(c => c.id === id);
-    if (index !== -1) {
-      this.contents.splice(index, 1);
-      return true;
-    }
-    return false;
+    const result = await db
+      .delete(contents)
+      .where(eq(contents.id, id));
+    return true;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
+
+// Create admin user only if table is empty
+(async () => {
+  try {
+    // First check if any users exist at all
+    const [result] = await db.select({ value: count() }).from(users);
+    if (result.value === 0) {
+      // Create admin user only if no users exist
+      await storage.createUser({
+        username: 'admin',
+        password: 'admin123',
+        isAdmin: true
+      });
+      console.log('Admin user created');
+    }
+  } catch (error) {
+    console.error('Error creating admin user', error);
+  }
+})();

@@ -1,16 +1,16 @@
-import { mysqlTable, text, int, boolean, timestamp, json } from "drizzle-orm/mysql-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = mysqlTable("users", {
-  id: int("id").primaryKey().autoincrement(),
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
   isAdmin: boolean("is_admin").notNull().default(false),
 });
 
-export const inquiries = mysqlTable("inquiries", {
-  id: int("id").primaryKey().autoincrement(),
+export const inquiries = pgTable("inquiries", {
+  id: serial("id").primaryKey(),
   name: text("name").notNull(),
   phone: text("phone").notNull(),
   email: text("email"),
@@ -20,22 +20,22 @@ export const inquiries = mysqlTable("inquiries", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const visits = mysqlTable("visits", {
-  id: int("id").primaryKey().autoincrement(),
+export const visits = pgTable("visits", {
+  id: serial("id").primaryKey(),
   date: timestamp("date").defaultNow(),
   page: text("page").notNull(),
   source: text("source"), // 'search', 'direct', 'social', 'other'
 });
 
-export const contents = mysqlTable("contents", {
-  id: int("id").primaryKey().autoincrement(),
+export const contents = pgTable("contents", {
+  id: serial("id").primaryKey(),
   key: text("key").notNull().unique(),
   title_ru: text("title_ru"),
   title_kk: text("title_kk"),
   content_ru: text("content_ru"),
   content_kk: text("content_kk"),
   section: text("section").notNull(),
-  order: int("order").notNull(),
+  order: integer("order").notNull(),
   isVisible: boolean("is_visible").default(true).notNull(),
   contentType: text("content_type").default("text").notNull(), // 'text', 'html', 'markdown'
   cssClasses: text("css_classes"),
