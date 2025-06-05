@@ -289,6 +289,7 @@ export default function Home() {
                     {t('services.batteryReplacement.description')}
                   </p>
                   <p className="font-bold text-primary">{t('services.batteryReplacement.price')}</p>
+                  <p className="text-sm text-gray-600 italic mt-2">{t('services.batteryReplacement.disclaimer')}</p>
                 </div>
               </div>
               
