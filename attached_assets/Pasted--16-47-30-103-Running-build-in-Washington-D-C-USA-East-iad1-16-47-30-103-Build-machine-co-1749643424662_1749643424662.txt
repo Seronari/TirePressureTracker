@@ -1,0 +1,39 @@
+[16:47:30.103] Running build in Washington, D.C., USA (East) – iad1
+[16:47:30.103] Build machine configuration: 2 cores, 8 GB
+[16:47:30.118] Cloning github.com/Seronari/TirePressureTracker (Branch: TPMS, Commit: c84a040)
+[16:47:30.403] Previous build caches not available
+[16:47:30.583] Cloning completed: 464.000ms
+[16:47:30.933] Running "vercel build"
+[16:47:31.393] Vercel CLI 42.2.0
+[16:47:33.617] Installing dependencies...
+[16:47:38.234] npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+[16:47:38.249] npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+[16:47:43.264] 
+[16:47:43.265] added 518 packages in 9s
+[16:47:43.265] 
+[16:47:43.265] 66 packages are looking for funding
+[16:47:43.266]   run `npm fund` for details
+[16:47:44.835] [36mvite v5.4.14 [32mbuilding for production...[36m[39m
+[16:47:44.883] transforming...
+[16:47:45.252] Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+[16:47:45.254]   npx update-browserslist-db@latest
+[16:47:45.255]   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[16:47:50.517] [32m✓[39m 1843 modules transformed.
+[16:47:51.045] rendering chunks...
+[16:47:51.058] computing gzip size...
+[16:47:51.080] [2m../dist/public/[22m[32mindex.html                 [39m[1m[2m  0.63 kB[22m[1m[22m[2m │ gzip:   0.38 kB[22m
+[16:47:51.080] [2m../dist/public/[22m[2massets/[22m[35mindex-A93eCeHr.css  [39m[1m[2m 68.35 kB[22m[1m[22m[2m │ gzip:  11.56 kB[22m
+[16:47:51.080] [2m../dist/public/[22m[2massets/[22m[36mindex-GwS1euqz.js   [39m[1m[33m738.43 kB[39m[22m[2m │ gzip: 236.04 kB[22m
+[16:47:51.081] [33m
+[16:47:51.081] (!) Some chunks are larger than 500 kB after minification. Consider:
+[16:47:51.081] - Using dynamic import() to code-split the application
+[16:47:51.081] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[16:47:51.081] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+[16:47:51.082] [32m✓ built in 6.22s[39m
+[16:47:51.181] Build Completed in /vercel/output [18s]
+[16:47:51.214] Deploying outputs...
+[16:47:53.002] 
+[16:47:53.149] Deployment completed
+[16:48:07.126] Uploading build cache [86.88 MB]...
+[16:48:08.105] Build cache uploaded: 987.368ms
+[16:48:10.378] Exiting build container
