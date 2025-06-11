@@ -21,7 +21,7 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
 
   return (
     <label className={`flex items-center cursor-pointer ${className}`}>
-      <span className="mr-2 text-sm font-medium">РУС</span>
+      <span className={`mr-2 text-sm font-medium transition-colors ${!isKazakh ? 'text-primary' : 'text-gray-400'}`}>РУС</span>
       <div className="relative">
         <input
           type="checkbox"
@@ -33,7 +33,7 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
         <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-gray-200"></div>
         <div className={`absolute left-1 top-1 bg-primary w-4 h-4 rounded-full transition-all ${isKazakh ? 'translate-x-5' : ''}`}></div>
       </div>
-      <span className="ml-2 text-sm font-medium">ҚАЗ</span>
+      <span className={`ml-2 text-sm font-medium transition-colors ${isKazakh ? 'text-primary' : 'text-gray-400'}`}>ҚАЗ</span>
     </label>
   );
 }
